@@ -103,9 +103,64 @@ def del_note():
         print("Замєтка для удалєния не вибрана!")
 button_note_del.clicked.connect(del_note)
 
+def add_tag():
+    if list_notes.selectedItems():
+        key = list_notes.selectedItems()[0].text()
+        tag = field_tag.text()
+        if not tag in notes[key]["тєги"]:
+            notes[key]["тєги"].append(tag)
+            list_tags.addItem(tag)
+            field_tag.clear()
+        with open ("notes_data.json", "w") as file:
+            json.dump(notes, file, sort_keys=True, ensure_ascii=False)
+        print(notes)
+    else:
+        print("Замєтка для зберєжения тєга не вибрана!")
+
+button_tag_add.clicked.connect(add_tag)
+
+def del_tag():
+    if list_tags.selectedItems():
+        key = list_notes.selectedItems()[0].text()
+        tag = list_notes.selectedItems()[0].text()
+        notes[key]["тєги"].remove(tag)
+        list_tags.clear()
+        list_tags.addItems(notes[key]["тєги"])
+        with open("notes_data.json", "w") as file:
+        json.dump(notes, sort_keys=True, ensure_ascii=False)
+    else:
+        print("Тєг для удалєния не вибран!")
+
+button_note_del. clicked.connect(del_tag)
+
+def search_tag():
+    tag = field_tag.text()
+    if button_tag_search.text() =="Шукать замєтки по тєгу" and tag:
+        print(tag)
+        notes_filtered = {}
+
+        for note in notes:
+            if tag in notes[note]["тєги"]
+                notes_filtered[note] = notes[note]
+
+        button_tag_search.setText("Ачістіть поіск")
+        list_notes.clear()
+        list_tags.clear()
+        list_notes.addItems(notes_filtered)
+    elif button_tag_search.text()
+        field_tag.clear()
+        list_notes.clear()
+        list_tags.clear()
+        list_notes.addItems(notes)
+        button_tag_search.setText("Шукать замєтки по тєгу")
+    else:
+        pass
+
+button_tag_search.clicked.connect(search_tag)
+
 notes_win.show()
 
 with open("notes_data.json", "r", encoding='utf-8') as file:
-    notes = json.koad(file)
-
+    notes = json.load(file)
+list_notes.addItems(notes)
 app.exec_()
