@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (QApplication, QWidget,
                              QLineEdit, QTextEdit,
                              QInputDialog, QHBoxLayout,
                              QVBoxLayout, QFormLayout)
-
+import json
 app = QApplication([])
 '''Інтерфейс програми'''
 
@@ -60,7 +60,7 @@ def add_note():
                                          'Додать замєтку',
                                          "Назва замєтки")
     if ok and note_name != '':
-        notes[note_name] = {'тєкст': '', 'тєгі': []}
+        notes[note_name] = {'тєкст': '', 'тєги': []}
         list_notes.addItem(note_name)
         list_tags.addItems(notes[note_name]['тєги'])
         print(notes)
@@ -89,6 +89,7 @@ button_note_save.clicked.connect(save_note)
 
 def del_note():
     if list_notes.selectedItems()[0].text():
+        key = list_notes.selectedItems()[0].text()
         del notes[key]
         list_notes.clear()
         list_tags.clear()
@@ -127,11 +128,11 @@ def del_tag():
         list_tags.clear()
         list_tags.addItems(notes[key]["тєги"])
         with open("notes_data.json", "w") as file:
-        json.dump(notes, sort_keys=True, ensure_ascii=False)
+            json.dump(notes, sort_keys=True, ensure_ascii=False)
     else:
         print("Тєг для удалєния не вибран!")
 
-button_note_del. clicked.connect(del_tag)
+button_note_del.clicked.connect(del_tag)
 
 def search_tag():
     tag = field_tag.text()
@@ -140,14 +141,14 @@ def search_tag():
         notes_filtered = {}
 
         for note in notes:
-            if tag in notes[note]["тєги"]
+            if tag in notes[note]["тєги"]:
                 notes_filtered[note] = notes[note]
 
         button_tag_search.setText("Ачістіть поіск")
         list_notes.clear()
         list_tags.clear()
         list_notes.addItems(notes_filtered)
-    elif button_tag_search.text()
+    elif button_tag_search.text():
         field_tag.clear()
         list_notes.clear()
         list_tags.clear()
@@ -160,7 +161,7 @@ button_tag_search.clicked.connect(search_tag)
 
 notes_win.show()
 
-with open("notes_data.json", "r", encoding='utf-8') as file:
+with open("notes_data.json", "r") as file:
     notes = json.load(file)
 list_notes.addItems(notes)
 app.exec_()
